@@ -10,7 +10,7 @@ is used.
 Unlike [Skip RNN](https://arxiv.org/abs/1708.06834) or [Jump LSTM](https://arxiv.org/abs/1704.06877) where the objective is discrete,
 Skim RNN introduces the Gumbel-softmax parametrization trick that makes the skimming objective differentiable:
 
-![Gumbel-Softmax](gumbel_softmax.png){:height="36px" width="36px"}
+![Gumbel-Softmax](gumbel_softmax.png)
 
 # Usage
 ```
