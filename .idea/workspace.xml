@@ -16,9 +16,11 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="9" column="12" lean-forward="false" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="12" />
-              <folding />
+            <state relative-caret-position="528">
+              <caret line="47" column="51" lean-forward="false" selection-start-line="47" selection-start-column="51" selection-end-line="47" selection-end-column="51" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -39,8 +41,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="240">
-                <caret line="16" column="28" lean-forward="false" selection-start-line="16" selection-start-column="28" selection-end-line="16" selection-end-column="28" />
+              <first_editor relative-caret-position="105">
+                <caret line="7" column="8" lean-forward="false" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -61,8 +63,8 @@
       <file leaf-file-name="vocab.py" pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torchtext/vocab.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="406">
-              <caret line="330" column="33" lean-forward="false" selection-start-line="330" selection-start-column="29" selection-end-line="330" selection-end-column="33" />
+            <state relative-caret-position="301">
+              <caret line="330" column="8" lean-forward="false" selection-start-line="330" selection-start-column="8" selection-end-line="330" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -72,8 +74,8 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Glov</find>
       <find>dataset</find>
+      <find>Glov</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -193,14 +195,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torchtext/vocab.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
-          <caret line="330" column="33" lean-forward="false" selection-start-line="330" selection-start-column="29" selection-end-line="330" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/skim_rnn.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2035">
@@ -232,8 +226,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="9" column="12" lean-forward="false" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="12" />
+        <state relative-caret-position="528">
+          <caret line="47" column="51" lean-forward="false" selection-start-line="47" selection-start-column="51" selection-end-line="47" selection-end-column="51" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torchtext/vocab.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="301">
+          <caret line="330" column="8" lean-forward="false" selection-start-line="330" selection-start-column="8" selection-end-line="330" selection-end-column="8" />
           <folding />
         </state>
       </provider>
@@ -241,8 +245,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="240">
-            <caret line="16" column="28" lean-forward="false" selection-start-line="16" selection-start-column="28" selection-end-line="16" selection-end-column="28" />
+          <first_editor relative-caret-position="105">
+            <caret line="7" column="8" lean-forward="false" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
             <folding />
           </first_editor>
           <second_editor />
