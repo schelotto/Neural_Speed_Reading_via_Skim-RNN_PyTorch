@@ -7,6 +7,10 @@ The imdb dataset is used by default and stored in the *./data* folder.
 Besides, the 300 dimensional GloVe word embedding trained under [840 billion words](http://nlp.stanford.edu/data/glove.840B.300d.zip)
 is used.
 
+Unlike [Skip RNN](https://arxiv.org/abs/1708.06834) or [Jump LSTM](https://arxiv.org/abs/1704.06877) where the objective is discrete,
+Skim RNN introduces the Gumbel-softmax parametrization trick that makes the skimming objective differentiable:
+![Gumbel-Softmax](gumbel_softmax.png)
+
 # Usage
 ```
 python main.py [arguments]
