@@ -12,7 +12,7 @@ python main.py [arguments]
 
 # Arguments
 ```
--h, help				help
--large_cell_size		size of the large LSTM
--small_cell_size		size ofthe small LSTM
+-h, help            help
+-large_cell_size            size of the large LSTM
+-small_cell_size            size ofthe small LSTM
 ```
