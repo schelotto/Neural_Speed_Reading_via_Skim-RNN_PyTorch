@@ -36,7 +36,7 @@ class dataset(TarDataset):
     def sort_key(ex):
         return len(ex.text)
 
-    def __init__(self, text_field, char_field, label_field, path=None, examples=None, **kwargs):
+    def __init__(self, text_field, label_field, path=None, examples=None, **kwargs):
         """Create an MR dataset instance given a path and fields.
         Arguments:
             text_field: The field that will be used for text data.
@@ -69,7 +69,7 @@ class dataset(TarDataset):
             return string.strip()
 
         text_field.preprocessing = data.Pipeline(clean_str)
-        fields = [('text', text_field), ('char', char_field), ('label', label_field)]
+        fields = [('text', text_field), ('label', label_field)]
 
         if examples is None:
             path = self.dirname if path is None else path
@@ -83,7 +83,7 @@ class dataset(TarDataset):
         super(dataset, self).__init__(examples, fields, **kwargs)
 
     @classmethod
-    def splits(cls, text_field, char_field, label_field, dev_ratio=.001, shuffle=True, root='.', **kwargs):
+    def splits(cls, text_field, label_field, dev_ratio=.001, shuffle=True, root='.', **kwargs):
         """Create dataset objects for splits of the MR dataset.
         Arguments:
             text_field: The field that will be used for the sentence.
@@ -102,5 +102,5 @@ class dataset(TarDataset):
         if shuffle: random.shuffle(examples)
         dev_index = -1 * int(dev_ratio * len(examples))
 
-        return (cls(text_field, char_field, label_field, examples=examples[:dev_index]),
-                cls(text_field, char_field, label_field, examples=examples[dev_index:]))
+        return (cls(text_field, label_field, examples=examples[:dev_index]),
+                cls(text_field, label_field, examples=examples[dev_index:]))
