@@ -98,7 +98,7 @@ class dataset(TarDataset):
                 Dataset.
         """
         path = cls.download_or_unzip(root)
-        examples = cls(text_field, char_field, label_field, path=path, **kwargs).examples
+        examples = cls(text_field, label_field, path=path, **kwargs).examples
         if shuffle: random.shuffle(examples)
         dev_index = -1 * int(dev_ratio * len(examples))
 
