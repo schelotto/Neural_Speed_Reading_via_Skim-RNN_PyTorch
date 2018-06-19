@@ -5,17 +5,19 @@ import argparse
 import datetime
 import torch.nn.functional as F
 import numpy as np
+import math
 
+from tqdm import tqdm
 from torch.autograd import Variable
-from dataset import dataset
+from torchtext.datasets import IMDB, SST
 from skim_rnn import SkimRNN
 from sklearn.metrics import accuracy_score, recall_score, precision_score
 from torchtext.vocab import GloVe
 
 parser = argparse.ArgumentParser(description="Skim LSTM")
-parser.add_argument('-lr', type=float, default=0.001, help='initial learning rate [default: 0.001]')
-parser.add_argument('-epochs', type=int, default=20, help='number of epochs for train [default: 256]')
-parser.add_argument('-batch-size', type=int, default=32, help='batch size for training [default: 64]')
+parser.add_argument('-lr', type=float, default=0.001, help='initial learning rate [default: 0.0001]')
+parser.add_argument('-epochs', type=int, default=256, help='number of epochs for train [default: 256]')
+parser.add_argument('-batch-size', type=int, default=16, help='batch size for training [default: 64]')
 parser.add_argument('-log-interval', type=int, default=1,
                     help='how many steps to wait before logging training status [default: 1]')
 parser.add_argument('-test-interval', type=int, default=100,
@@ -31,8 +33,8 @@ parser.add_argument('-small_cell_size', type=int, default=5, help='hidden size o
 parser.add_argument('-num_layers', type=int, default=1, help='number of hidden layer [default 1]')
 parser.add_argument('-embed_dim', type=int, default=300, help='number of embedding dimension [default: 128]')
 parser.add_argument('-hidden_layer', type=int, default=200,
-                    help='dimension of hidden layer in the fully connected network [default: 2000]')
-parser.add_argument('-gamma', type=float, default=0.1, help='gamma regularization parameter [default: 0.1]')
+                    help='dimension of hidden layer in the fully connected network [default: 200]')
+parser.add_argument('-gamma', type=float, default=0.01, help='gamma regularization parameter [default: 0.01]')
 parser.add_argument('-tau', type=float, default=0.5, help='gamma regularization parameter [default: 0.5]')
 # device
 parser.add_argument('-device', type=int, default=0, help='device to use for iterate data, 0 mean cpu [default: -1]')
@@ -44,7 +46,8 @@ parser.add_argument('-test', action='store_true', default=False, help='train or 
 args = parser.parse_args()
 
 def load_data(text_field, label_field, **kwargs):
-    train_data, test_data = dataset.splits(text_field, label_field)
+    train_data, test_data, _ = SST.splits(text_field, label_field,
+                                          filter_pred=lambda ex: ex.label != 'neutral')
     text_field.build_vocab(train_data, vectors=GloVe()),
     label_field.build_vocab(train_data, test_data)
     train_iter, test_iter = data.BucketIterator.splits(
@@ -91,6 +94,7 @@ optim = torch.optim.Adam(filter(lambda x: x.requires_grad, skim_rnn_classifier.p
 
 global_step = 0
 EPSILON = 1e-15
+r = 1e-4
 
 for epoch in range(args.epochs):
     step = 0
@@ -103,13 +107,16 @@ for epoch in range(args.epochs):
 
     skim_rnn_classifier.train()
 
-    for batch in train_iter:
+    for batch in tqdm(train_iter):
         sent, label = batch.text, batch.label
-        sent, label = sent.cuda(), label.cuda()
+
+        if torch.cuda.is_available():
+            sent, label = sent.cuda(), label.cuda()
         optim.zero_grad()
 
-        logits, h_stack, p_stack = skim_rnn_classifier(sent)
-        loss = F.cross_entropy(logits, label) + args.gamma * torch.mean(-torch.log(p_stack ** 2 + EPSILON))
+        tau = max(0.5, math.exp(-r * global_step))
+        logits, h_stack, p_stack = skim_rnn_classifier(sent, tau)
+        loss = F.cross_entropy(logits, label) # + args.gamma * torch.mean(-torch.log(p_stack[:, :, 1] ** 2 + EPSILON))
         loss.backward()
         optim.step()
 
@@ -120,13 +127,11 @@ for epoch in range(args.epochs):
         scores = np.append(scores, predict.cpu().data.numpy())
         target = np.append(target, label.cpu().data.numpy())
 
-        if (step + 1) % 100 == 0:
-            acc, pre, rec = accuracy_score(target, scores), precision_score(target, scores), recall_score(target,
-                                                                                                          scores)
-            print('Epoch [%d/%d] | Step [%d/%d] | Loss: %.4f | Acc: %.4f | Precision: %.4f | Recall: %.4f'
-                  % (epoch + 1, args.epochs, step + 1, len(train_iter), loss.data[0], acc, pre, rec))
-            scores = np.array([])
-            target = np.array([])
+    acc, pre, rec = accuracy_score(target, scores), precision_score(target, scores), recall_score(target, scores)
+    print('Epoch [%d/%d] | Step [%d/%d] | Loss: %.4f | Acc: %.4f | Precision: %.4f | Recall: %.4f'
+          % (epoch + 1, args.epochs, step + 1, len(train_iter), loss.data.item(), acc, pre, rec))
+    scores = np.array([])
+    target = np.array([])
 
     if not os.path.isdir(args.save_dir):
         os.makedirs(args.save_dir)
@@ -142,12 +147,11 @@ for epoch in range(args.epochs):
     for batch in test_iter:
         sent, label = batch.text, batch.label
         sent, label = sent.cuda(), label.cuda()
-        sent, label = Variable(sent.data, volatile=True), Variable(label.data, volatile=True)
-        logits, h_stack, Q_stack = skim_rnn_classifier.inference(sent)
+        logits, h_stack, Q_stack = skim_rnn_classifier(sent)
         predict = torch.max(logits, 1)[1].squeeze()
         scores_ = np.append(scores_, predict.cpu().data.numpy())
         target_ = np.append(target_, label.cpu().data.numpy())
 
     acc, pre, rec = accuracy_score(target_, scores_), precision_score(target_, scores_), recall_score(target_, scores_)
     print('Epoch [%d/%d] | Loss: %.4f | Acc: %.4f | Precision: %.4f | Recall: %.4f'
-          % (epoch + 1, args.epochs, loss.data[0], acc, pre, rec))
+          % (epoch + 1, args.epochs, loss.data.item(), acc, pre, rec))
